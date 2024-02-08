@@ -7,7 +7,7 @@ config();
 
 const PORT = env.PORT ?? 3000;
 
-const server = createServer(async (request, response) => {
+const server = createServer(async (request, response): Promise<void> => {
   await routesHandler(request, response);
 });
 

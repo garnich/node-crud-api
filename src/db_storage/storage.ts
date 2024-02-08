@@ -1,9 +1,7 @@
-import { IUser } from "../types";
+import { IUser, INewUser } from "../types";
+import { v4 as uuidv4 } from 'uuid';
 
 class DBStorage {
-    /**
-     * users: IUsers[]
-     */
     public users: IUser[];
 
     constructor() {
@@ -12,6 +10,17 @@ class DBStorage {
 
     async getUsers(): Promise<IUser[]> {
         return this.users;
+    }
+
+    async addUser(userData: INewUser): Promise<IUser> {
+        const newUser: IUser = {
+            id: uuidv4(),
+            ...userData
+        }
+
+        this.users.push(newUser);
+
+        return newUser;
     }
 
 }
