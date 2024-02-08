@@ -1,6 +1,6 @@
 import { httpMethods, MESSGES } from '../constants';
 import DBStorage from '../db_storage/storage';
-import { INewUser, IUser } from '../types';
+import { INewUser, IUser, IUpdatedUser } from '../types';
 import { isNewUserDataValid } from './dataHelpers';
 import { getResponse } from './responseHelper';
 import { validate as isValidUuid } from 'uuid';
@@ -19,7 +19,7 @@ export const routesHandler = async (req:any, res: any): Promise<void> => {
 
             if (!id || !isValidUuid(id)) {
                 getResponse(res, 400, MESSGES.ERROR_INVALID_ID);
-                return
+                return;
             }
            
             const user = await DBStorage.getUserById(id).then((user: IUser | undefined) => user);
@@ -51,6 +51,33 @@ export const routesHandler = async (req:any, res: any): Promise<void> => {
                 const newUser = await DBStorage.addUser(userData).then((user: IUser) => user);
 
                 getResponse(res, 201, newUser);
+            })
+        } else if (path.startsWith('/api/users/') && req.method === httpMethods.PUT) {
+            const id: string = path.substring('/api/users/'.length);
+
+            if (!id || !isValidUuid(id)) {
+                getResponse(res, 400, MESSGES.ERROR_INVALID_ID);
+                return
+            }
+
+            let data = '';
+        
+            req.on('data', (chunk: any) => {
+              data += chunk.toString();
+            });
+            
+            req.on('end', async () => {
+              const params = JSON.parse(data);
+    
+                const updateUserData: IUpdatedUser = {
+                  username: params.username || undefined,
+                  age: params.age || undefined,
+                  hobbies: params.hobbies || undefined,
+                };
+
+                const updatedUser = await DBStorage.updateUser(id, updateUserData).then((user: IUser | undefined | null) => user);
+
+                return updatedUser ? getResponse(res, 200, updatedUser) : updatedUser === null ? getResponse(res, 400, MESSGES.ERROR_400) : getResponse(res, 404, `${MESSGES.ERROR_NOT_FOUND} ${id}`);
             })
         } else {
             getResponse(res, 404, MESSGES.ERROR_404);
