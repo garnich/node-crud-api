@@ -1,14 +1,14 @@
 import { createServer } from 'http';
 import { env } from 'process';
 import { config } from 'dotenv';
+import { routesHandler } from './src/helpers/routesHandlerHelpers';
 
 config();
 
-const PORT = env.PORT || 3000;
+const PORT = env.PORT ?? 3000;
 
 const server = createServer(async (request, response) => {
-    response.write(JSON.stringify('Server test response'));
-    response.end();
+  await routesHandler(request, response);
 });
 
 server.listen(PORT, () => {
