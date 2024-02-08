@@ -3,6 +3,7 @@ import DBStorage from '../db_storage/storage';
 import { INewUser, IUser } from '../types';
 import { isNewUserDataValid } from './dataHelpers';
 import { getResponse } from './responseHelper';
+import { validate as isValidUuid } from 'uuid';
 
 export const routesHandler = async (req:any, res: any): Promise<void> => {
     try {
@@ -13,6 +14,17 @@ export const routesHandler = async (req:any, res: any): Promise<void> => {
             const users = await DBStorage.getUsers().then((users: IUser[]) => users);
 
             getResponse(res, 200, users);
+        } else if (path.startsWith('/api/users/') && req.method === httpMethods.GET) {
+            const id: string = path.substring('/api/users/'.length);
+
+            if (!id || !isValidUuid(id)) {
+                getResponse(res, 400, MESSGES.ERROR_INVALID_ID);
+                return
+            }
+           
+            const user = await DBStorage.getUserById(id).then((user: IUser | undefined) => user);
+        
+            return user ? getResponse(res, 200, user) : getResponse(res, 404, `${MESSGES.ERROR_NOT_FOUND} ${id}`);
         } else if (path === '/api/users' && req.method === httpMethods.POST) {
             let data = '';
         

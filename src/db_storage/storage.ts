@@ -23,6 +23,10 @@ class DBStorage {
         return newUser;
     }
 
+    async getUserById(id: string): Promise<IUser | undefined> {
+        return this.users.find((user: IUser) => user.id === id);
+    }
+
 }
 
 export default new DBStorage();
