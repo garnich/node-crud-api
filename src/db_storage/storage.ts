@@ -54,6 +54,17 @@ class DBStorage {
 
     return newUser;
   }
+
+  async deleteUser(id: string): Promise<IUser[] | undefined> {
+    const idx = this.users.findIndex((user) => user.id === id);
+
+    if (idx < 0) {
+      return undefined;
+    }
+
+    this.users = [...this.users.slice(0, idx), ...this.users.slice(idx + 1)];
+    return this.users;
+  }
 }
 
 export default new DBStorage();

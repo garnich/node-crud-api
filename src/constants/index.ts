@@ -14,7 +14,8 @@ const MESSGES = {
     ERROR_404: 'Sorry! Looks like I can\'t resolve this route.',
     ERROR_400: 'Sorry! Data is invalid. Note: username(sting), age(number), hobbies([] or [] of strings) are REQUIRED!)',
     ERROR_INVALID_ID: 'Request contain INVALID id',
-    ERROR_NOT_FOUND: 'Can\'t find user with id:'
+    ERROR_NOT_FOUND: 'Can\'t find user with id:',
+    USER_DELETED: 'Successfully finded and deleted user with id:'
 }
 
 export { HEADER_TYPE, httpMethods, MESSGES }
